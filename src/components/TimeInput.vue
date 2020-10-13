@@ -28,8 +28,8 @@ export default {
       }
     },
     giveTime: function(){
-        let hours = this.time[0]+this.time[1];
-        let minutes = this.time[2]+this.time[3];
+        let hours = Number(this.time[0]+this.time[1]);
+        let minutes = Number(this.time[2]+this.time[3]);
         return (hours>24||minutes>60)?false:{hours, minutes}      
     },
     clearInput: function(){

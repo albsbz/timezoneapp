@@ -4,7 +4,7 @@
     <div class="wrapper">
 
       <div class="column box">
-        <p class="title is-3">My Timezone</p>
+        <p class="title is-3">My Time</p>
         <div class="field">
           <label class="label">Select your Timezone</label>
           <div class="control">
@@ -12,8 +12,8 @@
               <select v-model="myTimezone">
                 <option v-for="timezone in timezones" 
                         :value="timezone" 
-                        :key="timezone">
-                        UTC {{timezone}}
+                        :key="timezone.hours+'.'+timezone.minutes">
+                        UTC {{timezone.hours}}.{{timezone.minutes}}
                 </option>
               </select>
             </div>
@@ -33,7 +33,7 @@
       </div>
 
       <div class="column box">
-        <p class="title is-3">Partner Timezone</p>
+        <p class="title is-3">Partner Time</p>
         <div class="field">
           <label class="label">Select partner Timezone</label>
           <div class="control">
@@ -41,8 +41,8 @@
               <select v-model="partnerTimezone">
                 <option v-for="timezone in timezones" 
                         :value="timezone" 
-                        :key="timezone">
-                        UTC {{timezone}}
+                        :key="timezone.hours+'.'+timezone.minutes">
+                        UTC {{timezone.hours}}.{{timezone.minutes}}
                 </option>
               </select>
             </div>
@@ -88,11 +88,49 @@ export default {
     TimeInput
   },
   data: function () {return {
-      timezones: [-11,-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      // myTime: [0,0,0,0],
-      // partnerTime: [0,0,0,0],
-      myTimezone: 0,
-      partnerTimezone: 0,
+      timezones: [
+        {hours: -12, minutes:0},
+        {hours: -11, minutes:0},
+        {hours: -10, minutes:0},
+        {hours: -9, minutes:0},
+        {hours: -9, minutes:30},
+        {hours: -8, minutes:0},
+        {hours: -7, minutes:0},
+        {hours: -6, minutes:0},
+        {hours: -5, minutes:0},
+        {hours: -4, minutes:0},
+        {hours: -3, minutes:0},
+        {hours: -3, minutes:30},
+        {hours: -2, minutes:0},
+        {hours: -1, minutes:0},
+        {hours: 0, minutes:0},
+        {hours: 1, minutes:0},
+        {hours: 2, minutes:0},
+        {hours: 3, minutes:0},
+        {hours: 3, minutes:30},
+        {hours: 4, minutes:0},
+        {hours: 4, minutes:30},
+        {hours: 5, minutes:0},
+        {hours: 5, minutes:30},
+        {hours: 5, minutes:45},
+        {hours: 6, minutes:0},
+        {hours: 6, minutes:30},
+        {hours: 7, minutes:0},
+        {hours: 8, minutes:0},
+        {hours: 8, minutes:45},
+        {hours: 9, minutes:0},
+        {hours: 9, minutes:30},
+        {hours: 10, minutes:0},
+        {hours: 10, minutes:30},
+        {hours: 11, minutes:0},
+        {hours: 12, minutes:0},
+        {hours: 12, minutes:45},
+        {hours: 13, minutes:0},
+        {hours: 14, minutes:0},
+      ],
+
+      myTimezone: {hours: 0, minutes:0},
+      partnerTimezone: {hours: 0, minutes:0},
       myAppointedTime: undefined,
       partnerAppointedTime: undefined,
       ifShowPartnerControl: true,
@@ -119,15 +157,19 @@ export default {
       let time=this.isTimeValid();
       if (time){
         if (!isNaN(time.myTime.hours)){
+          let newTime=time.myTime.hours*60+time.myTime.minutes-(this.myTimezone.hours*60+this.myTimezone.minutes)+(this.partnerTimezone.hours*60+this.partnerTimezone.minutes)
+
           this.partnerAppointedTime={
-            hours: (time.myTime.hours-this.myTimezone+this.partnerTimezone)%24,
-            minutes: time.myTime.minutes
+            hours: (24+(newTime-newTime%60)/60)%24,
+            minutes: newTime%60
           }
           this.myAppointedTime= undefined;
         } else {
+          let newTime=time.partnerTime.hours*60+time.partnerTime.minutes-(this.partnerTimezone.hours*60+this.partnerTimezone.minutes)+(this.myTimezone.hours*60+this.myTimezone.minutes)
+
           this.myAppointedTime={
-            hours: (time.partnerTime.hours-this.partnerTimezone+this.myTimezone)%24,
-            minutes: time.partnerTime.minutes
+            hours: (24+(newTime-newTime%60)/60)%24,
+            minutes: newTime%60
           }
           this.partnerAppointedTime= undefined;
         }
@@ -148,7 +190,6 @@ export default {
         return false
       }
       else {
-        console.log({myTime, partnerTime})
         this.scheduleDisabled=false;
         return {myTime, partnerTime}
       }

@@ -13,7 +13,7 @@
                 <option v-for="timezone in timezones" 
                         :value="timezone" 
                         :key="timezone.hours+'.'+timezone.minutes">
-                        UTC {{timezone.hours}}:{{timezone.minutes=='0'?'00':timezone.minutes}}
+                        UTC {{timezone.hours}}.{{timezone.minutes}}
                 </option>
               </select>
             </div>
@@ -27,7 +27,7 @@
             />
           </div>
           <div v-show="!ifShowYouControl">
-            {{myAppointedTime?myAppointedTime.hours:''}}:{{myAppointedTime?(myAppointedTime.minutes=='0'?'00':myAppointedTime.minutes):''}}
+            {{myAppointedTime?myAppointedTime.hours:''}}:{{myAppointedTime?myAppointedTime.minutes:''}}
           </div>
         </div> 
       </div>
@@ -42,7 +42,7 @@
                 <option v-for="timezone in timezones" 
                         :value="timezone" 
                         :key="timezone.hours+'.'+timezone.minutes">
-                        UTC {{timezone.hours}}.{{timezone.minutes=='0'?'00':timezone.minutes}}
+                        UTC {{timezone.hours}}.{{timezone.minutes}}
                 </option>
               </select>
             </div>
@@ -56,7 +56,7 @@
             />
           </div>
           <div v-show="!ifShowPartnerControl">
-            {{partnerAppointedTime?partnerAppointedTime.hours:''}}:{{partnerAppointedTime?(partnerAppointedTime.minutes=='0'?'00':partnerAppointedTime.minutes):''}}
+            {{partnerAppointedTime?partnerAppointedTime.hours:''}}:{{partnerAppointedTime?partnerAppointedTime.minutes:''}}
           </div>
         </div>
 

@@ -1,30 +1,52 @@
 <template>
-    <input class="input is-hovered time" type="text" placeholder="Time" maxlength="5" 
-        :value="timeShow" 
-        @keydown.prevent="updateTime"
-        @clear="clearInput"
-        >
+  <div>
+      <input class="input is-hovered time" type="number" placeholder="Hr" min="0" max="23" maxlength="2"
+      v-model="hr" 
+      @keyup="updateTime"
+      :class="[{'is-danger':isHrDanger}]"
+    >:
+    <input class="input is-hovered time" type="number" placeholder="Min" min="0" max="59" maxlength="2"
+      v-model="min"
+      @keyup="updateTime"
+      :class="[{'is-danger':isMinDanger}]"
+    >
+  </div>
+ 
 </template>
 
 <script>
 export default {
   name: 'TimeInput',
   data: function () {return {
-      time: [undefined,undefined,undefined,undefined]
+      hr: 0,
+      min:0,
+      isHrDanger: false,
+      isMinDanger: false
     }
   },
   computed: {
-    timeShow: function(){
-      let newArr=[...this.time];
-      newArr.splice(2, 0, ':');
-      return newArr.join('')
-    },    
+    // time: function(){
+    //   return{
+    //     h
+    //   }
+    // },    
   },
   methods: {
-    updateTime: function(e){
-      if ((e.keyCode>47&&e.keyCode<58)||(e.keyCode>95&&e.keyCode<106)) {
-        this.time.push(e.key);
-        this.time=this.time.slice(-4);
+    updateTime: function(){
+      this.isMinDanger=true;
+      this.isHrDanger=true;
+
+      let hr=parseInt(this.hr);
+      let min=parseInt(this.min);
+      if (hr>=0&&hr<=23) {
+        this.isHrDanger=false;
+      }
+      if(min>=0&&min<=59){
+        this.isMinDanger=false;
+      }
+
+      if (!this.isHrDanger && !this.isMinDanger) {
+        this.$emit('timeChange', {hr, min});
       }
     },
     giveTime: function(){
@@ -33,7 +55,8 @@ export default {
         return (hours>24||minutes>60)?false:{hours, minutes}      
     },
     clearInput: function(){
-      this.time=[undefined,undefined,undefined,undefined];
+      this.hr=0;
+      this.min=0;
     }
     
   }
@@ -43,5 +66,21 @@ export default {
 <style scoped>
     .time{
         text-align: center;
+        width: 50px;
+        font: 400 13.3333px Arial;
+        vertical-align: middle;
+
+
     }
+    .time::-webkit-outer-spin-button,
+    .time::-webkit-inner-spin-button {
+        /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    .time[type=number] {
+        -moz-appearance:textfield; /* Firefox */
+    }
+    
 </style>
